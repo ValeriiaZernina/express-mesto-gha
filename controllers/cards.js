@@ -1,4 +1,9 @@
 const cardModel = require("../models/card");
+const {
+  STATUS_BAD_REQUEST,
+  STATUS_NOT_FOUND,
+  STATUS_INTERNAL_SERVER_ERROR,
+} = require("../utils/errorsCode");
 
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;

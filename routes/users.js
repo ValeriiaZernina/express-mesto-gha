@@ -7,7 +7,7 @@ userRouter.post("/", userControllers.createUser);
 userRouter.get("/", userControllers.getUsers);
 // возвращает пользователя по _id
 userRouter.get("/:id", userControllers.getUsersById);
-
+// возвращает мой профиль
 userRouter.get("/me", userControllers.getUsersMe);
 // обновляет профиль
 userRouter.patch("/me", userControllers.patchUserMe);
