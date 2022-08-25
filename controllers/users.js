@@ -30,9 +30,9 @@ module.exports.getUsers = (req, res) => {
   userModel
     .find({})
     .then((users) => res.send(users))
-    .catch((err) => {
+    .catch(() => {
       res
-        .status(STATUS_INTERNAL_SERVER_ERRO)
+        .status(STATUS_INTERNAL_SERVER_ERROR)
         .send({ message: "Что-то пошло не так!" });
     });
 };
@@ -41,28 +41,70 @@ module.exports.getUsersMe = (req, res) => {
   userModel
     .findById(req.user._id)
     .then((user) => res.send(user))
-    .catch((err) =>
-      res.status(500).send({ message: `${err.name}: ${err.message}` })
-    );
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "ID пользователя не найдено!" });
+      } else {
+        res
+          .status(STATUS_INTERNAL_SERVER_ERROR)
+          .send({ message: `${err.name} ${err.message}` });
+      }
+    });
 };
 
 module.exports.getUsersById = (req, res) => {
   userModel
     .findById(req.params.id)
-    .then((user) => res.send(user))
-    .catch((err) =>
-      res.status(500).send({ message: `${err.name}: ${err.message}` })
-    );
+    .then((user) => {
+      if (!user) {
+        return res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Запрашиваемый пользователь не найден." });
+      }
+      return res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(STATUS_BAD_REQUEST).send({
+          message: "Переданы некорректные данные при поиске пользователя.",
+        });
+      } else {
+        res
+          .status(STATUS_INTERNAL_SERVER_ERROR)
+          .send({ message: `${err.name} ${err.message}` });
+      }
+    });
 };
 
 module.exports.patchUserMe = (req, res) => {
   const { name, about } = req.body;
   userModel
-    .findByIdAndUpdate(req.user._id, { name, about })
-    .then((user) => res.send(user))
-    .catch((err) =>
-      res.status(500).send({ message: `${err.name}: ${err.message}` })
-    );
+    .findByIdAndUpdate(
+      req.user._id,
+      { name, about },
+      { new: true, runValidators: true }
+    )
+    .then((user) => {
+      if (!user) {
+        return res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Запрашиваемый пользователь не найден." });
+      }
+      return res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: "Некорректные данные при обновлении профиля." });
+      } else {
+        res
+          .status(STATUS_INTERNAL_SERVER_ERROR)
+          .send({ message: "Что-то пошло не так!" });
+      }
+    });
 };
 
 module.exports.patchUserMeAvatar = (req, res) => {
@@ -71,16 +113,16 @@ module.exports.patchUserMeAvatar = (req, res) => {
     .findByIdAndUpdate(
       req.user._id,
       { avatar },
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     )
     .then((user) => {
       if (!user) {
         return res
-        .status(STATUS_BAD_REQUEST)
-        .send({ message: "Запрашиваемый пользователь не найден." });
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: "Запрашиваемый пользователь не найден." });
       }
       return res.send(user);
-      )}
+    })
     .catch((err) => {
       if (err.name === "ValidationError") {
         res
