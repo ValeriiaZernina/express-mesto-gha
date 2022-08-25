@@ -74,7 +74,7 @@ module.exports.likeCard = (req, res) => {
           .status(STATUS_NOT_FOUND)
           .send({ message: 'ID карточки передан некорректно.' });
       }
-      res.send(card);
+      return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
