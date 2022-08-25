@@ -10,7 +10,9 @@
 ```
 [![Tests for sprint 13](https://github.com/ValeriiaZernina/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/ValeriiaZernina/express-mesto-gha/actions/workflows/tests-13-sprint.yml)
 
-https://github.com/ValeriiaZernina/express-mesto-gha.git
+## Ссылка на репозиторий
+
+https://github.com/ValeriiaZernina/express-mesto-gha
 
 ## Директории
 
