@@ -5,10 +5,10 @@ const userControllers = require('../controllers/users');
 userRouter.post('/', userControllers.createUser);
 // возвращает всех пользователей
 userRouter.get('/', userControllers.getUsers);
-// возвращает пользователя по _id
-userRouter.get('/:id', userControllers.getUsersById);
 // возвращает мой профиль
 userRouter.get('/me', userControllers.getUsersMe);
+// возвращает пользователя по _id
+userRouter.get('/:id', userControllers.getUsersById);
 // обновляет профиль
 userRouter.patch('/me', userControllers.patchUserMe);
 // обновляет аватар
