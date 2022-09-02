@@ -1,17 +1,16 @@
-const userRouter = require('express').Router();
-const userControllers = require('../controllers/users');
+const userRouter = require("express").Router();
+const { celebrate, Joi } = require("celebrate");
+const userControllers = require("../controllers/users");
 
-// создаёт пользователя
-userRouter.post('/', userControllers.createUser);
 // возвращает всех пользователей
-userRouter.get('/', userControllers.getUsers);
+userRouter.get("/", userControllers.getUsers);
 // возвращает мой профиль
-userRouter.get('/me', userControllers.getUsersMe);
+userRouter.get("/me", userControllers.getUsersMe);
 // возвращает пользователя по _id
-userRouter.get('/:id', userControllers.getUsersById);
+userRouter.get("/:id", userControllers.getUsersById);
 // обновляет профиль
-userRouter.patch('/me', userControllers.patchUserMe);
+userRouter.patch("/me", userControllers.patchUserMe);
 // обновляет аватар
-userRouter.patch('/me/avatar', userControllers.patchUserMeAvatar);
+userRouter.patch("/me/avatar", userControllers.patchUserMeAvatar);
 
 module.exports = userRouter;
