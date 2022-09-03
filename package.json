@@ -2,7 +2,7 @@
   "name": "express-mesto-gha",
   "version": "1.0.0",
   "description": "Проект Mesto фронтенд + бэкенд",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
@@ -12,6 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/ValeriiaZernina/express-mesto-gha.git"
   },
+  "keywords": [],
   "author": "Zernina Valeria",
   "license": "ISC",
   "bugs": {

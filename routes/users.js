@@ -4,7 +4,7 @@ const userControllers = require("../controllers/users");
 
 // возвращает всех пользователей
 userRouter.get("/", userControllers.getUsers);
-// возвращает мой профиль
+// возвращает информацию о текущем пользователе
 userRouter.get("/me", userControllers.getUsersMe);
 // возвращает пользователя по _id
 userRouter.get("/:id", userControllers.getUsersById);

@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../models/user");
 
 const {
+  STATUS_OK,
+  STATUS_CREATED,
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_INTERNAL_SERVER_ERROR,
@@ -24,7 +26,7 @@ module.exports.createUser = (req, res, next) => {
       })
     )
     .then((user) => {
-      res.status(201).send({
+      res.status(STATUS_CREATED).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
@@ -57,22 +59,25 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
-module.exports.getUsersMe = (req, res) => {
+module.exports.getUsersMe = (req, res, next) => {
+  const { _id: id } = req.user;
+
   userModel
-    .findById(req.user._id)
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === "CastError") {
-        res
-          .status(STATUS_NOT_FOUND)
-          .send({ message: "ID пользователя не найдено!" });
-      } else {
-        res
-          .status(STATUS_INTERNAL_SERVER_ERROR)
-          .send({ message: `${err.name} ${err.message}` });
-      }
-    });
+    .findById(id)
+    .then((user) => res.status(STATUS_OK).send({ data: user[0] }))
+    .catch(next);
 };
+// {
+//   if (err.name === "CastError") {
+//     res
+//       .status(STATUS_NOT_FOUND)
+//       .send({ message: "ID пользователя не найдено!" });
+//   } else {
+//     res
+//       .status(STATUS_INTERNAL_SERVER_ERROR)
+//       .send({ message: `${err.name} ${err.message}` });
+//   }
+// });
 
 module.exports.getUsersById = (req, res) => {
   userModel
