@@ -5,6 +5,7 @@ const { celebrate, Joi, errors } = require("celebrate");
 const { STATUS_NOT_FOUND } = require("./utils/errorsCode");
 const { login, createUser } = require("./controllers/users");
 const auth = require("./middleware/auth");
+const { handleError } = require("./utils/handleError");
 
 // запуск на 3000 порту
 const { PORT = 3000 } = process.env;
@@ -55,6 +56,9 @@ app.use("/cards", require("./routes/cards"));
 app.all("*", auth, (req, res, next) => {
   next(new STATUS_NOT_FOUND("Не существующий маршрут"));
 });
+
+app.use(errors());
+app.use(handleError);
 
 app.listen(PORT, () => {
   // console.log(`Сервер запущен на ${PORT}`);

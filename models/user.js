@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcrypt = require("bcryptjs"); // импортируем bcrypt
+const bcrypt = require("bcrypt"); // импортируем bcrypt
 const { UNAUTHORIZED_STATUS } = require("../utils/errorsCode");
 
 const userSchema = new mongoose.Schema({
@@ -29,8 +29,9 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: [true, "Please enter Your Password"],
     minlength: [5, "Password must be at least 6 characters"],
+    // select: false,
   },
 });
 

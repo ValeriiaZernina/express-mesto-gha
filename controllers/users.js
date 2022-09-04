@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs"); // импортируем bcrypt
+const bcrypt = require("bcrypt"); // импортируем bcrypt
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user");
 
@@ -36,27 +36,12 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch(next);
 };
-// .catch((err) => {
-//   if (err.name === "ValidationError") {
-//     res
-//       .status(STATUS_BAD_REQUEST)
-//       .send({ message: "Некорректные данные при создании пользователя." });
-//   } else {
-//     res
-//       .status(STATUS_INTERNAL_SERVER_ERROR)
-//       .send({ message: "Что-то пошло не так!" });
-//   }
-// });
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   userModel
     .find({})
     .then((users) => res.send(users))
-    .catch(() => {
-      res
-        .status(STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: "Что-то пошло не так!" });
-    });
+    .catch(next);
 };
 
 module.exports.getUsersMe = (req, res, next) => {
