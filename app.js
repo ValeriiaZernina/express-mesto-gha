@@ -17,7 +17,7 @@ mongoose.connect("mongodb://localhost:27017/mestodb", {
   useNewUrlParser: true,
 });
 // получение куки
-app.use(cookieParser);
+app.use(cookieParser());
 // обновление, вместо bodyParser
 app.use(express.json());
 // роуты, не требующие авторизации, регистрация и логин
@@ -47,11 +47,8 @@ app.post(
   createUser
 );
 
-// авторизация
-app.use(auth);
-
-app.use("/users", require("./routes/users"));
-app.use("/cards", require("./routes/cards"));
+app.use("/users", auth, require("./routes/users"));
+app.use("/cards", auth, require("./routes/cards"));
 
 app.all("*", auth, (req, res, next) => {
   next(new STATUS_NOT_FOUND("Не существующий маршрут"));
