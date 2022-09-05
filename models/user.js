@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt"); // импортируем bcrypt
-const { UNAUTHORIZED_STATUS } = require("../utils/errorsCode");
+const { Unauthorized_status } = require("../utils/errors");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -23,31 +23,31 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, "Please enter Email"],
+    required: [true, 'Поле "email" должно быть заполнено'],
     unique: true,
     validate: [validator.isEmail, "Invalid email"],
   },
   password: {
     type: String,
-    required: [true, "Please enter Your Password"],
-    minlength: [5, "Password must be at least 6 characters"],
+    required: [true, 'Поле "password" должно быть заполнено'],
+    minlength: [5, "password must be at least 6 characters"],
     // select: false,
   },
 });
 
-userSchema.static.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email })
     .select("+password")
     .then((user) => {
       if (!user) {
         return Promise.reject(
-          new UNAUTHORIZED_STATUS("Email or password is incorrect")
+          new Unauthorized_status("Email or password is incorrect")
         );
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           return Promise.reject(
-            new UNAUTHORIZED_STATUS("Email or password is incorrect")
+            new Unauthorized_status("Email or password is incorrect")
           );
         }
         return user;

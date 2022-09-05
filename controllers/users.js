@@ -5,14 +5,21 @@ const userModel = require("../models/user");
 const {
   STATUS_OK,
   STATUS_CREATED,
-  STATUS_BAD_REQUEST,
-  STATUS_NOT_FOUND,
   STATUS_INTERNAL_SERVER_ERROR,
-  UNAUTHORIZED_STATUS,
 } = require("../utils/errorsCode");
+
+const {
+  Status_bad_request,
+  Unauthorized_status,
+  Status_not_found,
+} = require("../utils/errors");
 
 module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
+
+  if (!email || !password) {
+    throw new Status_bad_request("Обязательные поля");
+  }
 
   bcrypt
     .hash(password, 10)
@@ -25,15 +32,15 @@ module.exports.createUser = (req, res, next) => {
         password: hash, // записываем хеш в базу
       })
     )
-    .then((user) => {
+    .then((user) =>
       res.status(STATUS_CREATED).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
         email: user.email,
         _id: user._id,
-      });
-    })
+      })
+    )
     .catch(next);
 };
 
@@ -52,17 +59,6 @@ module.exports.getUsersMe = (req, res, next) => {
     .then((user) => res.status(STATUS_OK).send({ data: user[0] }))
     .catch(next);
 };
-// {
-//   if (err.name === "CastError") {
-//     res
-//       .status(STATUS_NOT_FOUND)
-//       .send({ message: "ID пользователя не найдено!" });
-//   } else {
-//     res
-//       .status(STATUS_INTERNAL_SERVER_ERROR)
-//       .send({ message: `${err.name} ${err.message}` });
-//   }
-// });
 
 module.exports.getUsersById = (req, res) => {
   userModel
@@ -70,14 +66,14 @@ module.exports.getUsersById = (req, res) => {
     .then((user) => {
       if (!user) {
         return res
-          .status(STATUS_NOT_FOUND)
+          .status(Status_not_found)
           .send({ message: "Запрашиваемый пользователь не найден." });
       }
       return res.send(user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({
+        res.status(Status_bad_request).send({
           message: "Переданы некорректные данные при поиске пользователя.",
         });
       } else {
@@ -99,7 +95,7 @@ module.exports.patchUserMe = (req, res) => {
     .then((user) => {
       if (!user) {
         return res
-          .status(STATUS_NOT_FOUND)
+          .status(Status_not_found)
           .send({ message: "Запрашиваемый пользователь не найден." });
       }
       return res.send(user);
@@ -107,7 +103,7 @@ module.exports.patchUserMe = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res
-          .status(STATUS_BAD_REQUEST)
+          .status(Status_bad_request)
           .send({ message: "Некорректные данные при обновлении профиля." });
       } else {
         res
@@ -128,7 +124,7 @@ module.exports.patchUserMeAvatar = (req, res) => {
     .then((user) => {
       if (!user) {
         return res
-          .status(STATUS_BAD_REQUEST)
+          .status(Status_bad_request)
           .send({ message: "Запрашиваемый пользователь не найден." });
       }
       return res.send(user);
@@ -136,7 +132,7 @@ module.exports.patchUserMeAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res
-          .status(STATUS_BAD_REQUEST)
+          .status(Status_bad_request)
           .send({ message: "Некорректные данные при обновлении аватара." });
       } else {
         res
@@ -152,7 +148,7 @@ module.exports.login = (req, res, next) => {
   userModel
     .findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sing({ _id: user._id }, "some-secret-key", {
+      const token = jwt.sign({ _id: user._id }, process.env["JWT_SECRET"], {
         expiresIn: 1000 * 60 * 60 * 24 * 7,
       });
       res

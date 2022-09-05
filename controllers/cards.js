@@ -1,9 +1,7 @@
 const cardModel = require("../models/card");
-const {
-  STATUS_BAD_REQUEST,
-  STATUS_NOT_FOUND,
-  STATUS_INTERNAL_SERVER_ERROR,
-} = require("../utils/errorsCode");
+const { Status_bad_request, Status_not_found } = require("../utils/errors");
+
+const { STATUS_INTERNAL_SERVER_ERROR } = require("../utils/errorsCode");
 
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
@@ -16,7 +14,7 @@ module.exports.createCard = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res
-          .status(STATUS_BAD_REQUEST)
+          .status(Status_bad_request)
           .send({ message: "Некорректные данные при создании карточки." });
       } else {
         res
@@ -43,14 +41,14 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       if (!card) {
         return res
-          .status(STATUS_NOT_FOUND)
+          .status(Status_not_found)
           .send({ message: "Запрашиваемая карточка не найдена." });
       }
       return res.send(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({
+        res.status(Status_bad_request).send({
           message: "Переданы некорректные данные при удалении карточки.",
         });
       } else {
@@ -71,14 +69,14 @@ module.exports.likeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         return res
-          .status(STATUS_NOT_FOUND)
+          .status(Status_not_found)
           .send({ message: "ID карточки передан некорректно." });
       }
       return res.send(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({
+        res.status(Status_bad_request).send({
           message: "Переданы некорректные данные для лайка.",
         });
       } else {
@@ -99,14 +97,14 @@ module.exports.dislikeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         return res
-          .status(STATUS_NOT_FOUND)
+          .status(Status_not_found)
           .send({ message: "ID карточки передан некорректно." });
       }
       return res.send(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({
+        res.status(Status_bad_request).send({
           message: "Переданы некорректные данные для дизлайка карточки.",
         });
       } else {

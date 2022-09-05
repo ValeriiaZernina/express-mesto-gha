@@ -7,7 +7,7 @@ function handleError(err, req, res, next) {
     status = 409;
   }
 
-  res.status(status).send({ message: "`${name}: ${message}" });
+  res.status(status).send({ message: `${name}: ${message}` });
   next();
 }
 
