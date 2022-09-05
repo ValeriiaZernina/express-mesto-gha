@@ -1,11 +1,11 @@
-class Status_bad_request extends Error {
+class StatusBadRequest extends Error {
   constructor(message = 'Неверный логин или пароль') {
     super(message);
     this.statusCode = 400;
   }
 }
 
-class Unauthorized_status extends Error {
+class UnauthorizedStatus extends Error {
   constructor(message = 'Неверный логин или пароль') {
     super(message);
     this.statusCode = 401;
@@ -19,7 +19,7 @@ class ForbiddenError extends Error {
   }
 }
 
-class Status_not_found extends Error {
+class StatusNotFound extends Error {
   constructor(message = 'Запрашиваемый пользователь не найден.') {
     super(message);
     this.statusCode = 404;
@@ -27,8 +27,8 @@ class Status_not_found extends Error {
 }
 
 module.exports = {
-  Status_bad_request,
-  Unauthorized_status,
+  StatusBadRequest,
+  UnauthorizedStatus,
   ForbiddenError,
-  Status_not_found,
+  StatusNotFound,
 };

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
 const { STATUS_OK, STATUS_CREATED } = require('../utils/errorsCode');
 
-const { Status_bad_request, Status_not_found } = require('../utils/errors');
+const { StatusBadRequest, StatusNotFound } = require('../utils/errors');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -11,7 +11,7 @@ module.exports.createUser = (req, res, next) => {
   } = req.body;
   // userModel.init();
   if (!email || !password) {
-    throw new Status_bad_request('Обязательные поля');
+    throw new StatusBadRequest('Обязательные поля');
   }
 
   bcrypt
@@ -55,7 +55,7 @@ module.exports.getUsersById = (req, res, next) => {
     .then((user) => {
       if (!user) {
         return res
-          .status(Status_not_found)
+          .status(StatusNotFound)
           .send({ message: 'Запрашиваемый пользователь не найден.' });
       }
       return res.send(user);
@@ -74,7 +74,7 @@ module.exports.patchUserMe = (req, res, next) => {
     .then((user) => {
       if (!user) {
         return res
-          .status(Status_not_found)
+          .status(StatusNotFound)
           .send({ message: 'Запрашиваемый пользователь не найден.' });
       }
       return res.send(user);
@@ -93,7 +93,7 @@ module.exports.patchUserMeAvatar = (req, res) => {
     .then((user) => {
       if (!user) {
         return res
-          .status(Status_bad_request)
+          .status(StatusBadRequest)
           .send({ message: 'Запрашиваемый пользователь не найден.' });
       }
       return res.send(user);

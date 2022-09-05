@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
-const { Unauthorized_status } = require('../utils/errors');
+const { UnauthorizedStatus } = require('../utils/errors');
 
 module.exports = (req, res, next) => {
   // тут вся авторизация
   const { jwt: token } = req.cookies;
 
   if (!token) {
-    throw new Unauthorized_status('Необходима авторизация');
+    throw new UnauthorizedStatus('Необходима авторизация');
   }
   let payload;
   try {
@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
     // console.log(payload);
   } catch (err) {
     res.clearCookie('jwt');
-    throw new Unauthorized_status('Необходима авторизация');
+    throw new UnauthorizedStatus('Необходима авторизация');
   }
   req.user = payload; // записываем пейлоуд в объект запроса
   next(); // пропускаем запрос дальше

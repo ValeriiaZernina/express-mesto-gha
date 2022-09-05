@@ -1,5 +1,5 @@
 const cardModel = require('../models/card');
-const { Status_not_found, ForbiddenError } = require('../utils/errors');
+const { StatusNotFound, ForbiddenError } = require('../utils/errors');
 
 const { STATUS_CREATED } = require('../utils/errorsCode');
 
@@ -49,7 +49,7 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         return res
-          .status(Status_not_found)
+          .status(StatusNotFound)
           .send({ message: 'ID карточки передан некорректно.' });
       }
       return res.send(card);
@@ -67,7 +67,7 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         return res
-          .status(Status_not_found)
+          .status(StatusNotFound)
           .send({ message: 'ID карточки передан некорректно.' });
       }
       return res.send(card);

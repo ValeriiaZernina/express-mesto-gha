@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt'); // импортируем bcrypt
-const { Unauthorized_status } = require('../utils/errors');
+const { UnauthorizedStatus } = require('../utils/errors');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -42,13 +42,13 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       if (!user) {
         return Promise.reject(
-          new Unauthorized_status('Неверный email или пароль'),
+          new UnauthorizedStatus('Неверный email или пароль'),
         );
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           return Promise.reject(
-            new Unauthorized_status('Неверный email или пароль'),
+            new UnauthorizedStatus('Неверный email или пароль'),
           );
         }
         return user;

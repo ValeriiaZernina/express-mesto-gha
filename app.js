@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const { Status_not_found } = require('./utils/errors');
+const { StatusNotFound } = require('./utils/errors');
 const { handleError } = require('./utils/handleError');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middleware/auth');
@@ -52,7 +52,7 @@ app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
 app.all('*', auth, (req, res, next) => {
-  next(new Status_not_found('Не существующий маршрут'));
+  next(new StatusNotFound('Не существующий маршрут'));
 });
 
 app.use(errors());
