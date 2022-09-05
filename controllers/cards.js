@@ -1,9 +1,9 @@
-const cardModel = require("../models/card");
-const { Status_bad_request, Status_not_found } = require("../utils/errors");
+const cardModel = require('../models/card');
+const { Status_not_found, ForbiddenError } = require('../utils/errors');
 
-const { STATUS_INTERNAL_SERVER_ERROR } = require("../utils/errorsCode");
+const { STATUS_CREATED } = require('../utils/errorsCode');
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   cardModel
@@ -11,106 +11,66 @@ module.exports.createCard = (req, res) => {
     .then((card) => {
       res.status(STATUS_CREATED).send(card);
     })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        res
-          .status(Status_bad_request)
-          .send({ message: "Некорректные данные при создании карточки." });
-      } else {
-        res
-          .status(STATUS_INTERNAL_SERVER_ERROR)
-          .send({ message: "Что-то пошло не так!" });
-      }
-    });
+    .catch(next);
 };
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   cardModel
     .find({})
     .then((cards) => res.send(cards))
-    .catch(() => {
-      res
-        .status(STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: "Что-то пошло не так!" });
-    });
+    .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
+  const { cardId: id } = req.params;
   cardModel
-    .findByIdAndRemove(req.params.cardId)
+    .findById(id)
     .then((card) => {
-      if (!card) {
-        return res
-          .status(Status_not_found)
-          .send({ message: "Запрашиваемая карточка не найдена." });
+      if (!card.owner.equals(req.user._id)) {
+        throw new ForbiddenError();
       }
-      return res.send(card);
+      return card.deleteOne();
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(Status_bad_request).send({
-          message: "Переданы некорректные данные при удалении карточки.",
-        });
-      } else {
-        res
-          .status(STATUS_INTERNAL_SERVER_ERROR)
-          .send({ message: "Что-то пошло не так!" });
+    .then((card) => {
+      if (card) {
+        res.send({ message: 'Карточка удалена.' });
       }
-    });
+    })
+    .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   cardModel
     .findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     )
     .then((card) => {
       if (!card) {
         return res
           .status(Status_not_found)
-          .send({ message: "ID карточки передан некорректно." });
+          .send({ message: 'ID карточки передан некорректно.' });
       }
       return res.send(card);
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(Status_bad_request).send({
-          message: "Переданы некорректные данные для лайка.",
-        });
-      } else {
-        res
-          .status(STATUS_INTERNAL_SERVER_ERROR)
-          .send({ message: "Что-то пошло не так!" });
-      }
-    });
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   cardModel
     .findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } }, // убрать _id из массива
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     )
     .then((card) => {
       if (!card) {
         return res
           .status(Status_not_found)
-          .send({ message: "ID карточки передан некорректно." });
+          .send({ message: 'ID карточки передан некорректно.' });
       }
       return res.send(card);
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(Status_bad_request).send({
-          message: "Переданы некорректные данные для дизлайка карточки.",
-        });
-      } else {
-        res
-          .status(STATUS_INTERNAL_SERVER_ERROR)
-          .send({ message: "Что-то пошло не так!" });
-      }
-    });
+    .catch(next);
 };
