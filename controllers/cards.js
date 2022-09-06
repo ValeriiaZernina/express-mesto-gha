@@ -1,7 +1,6 @@
-const cardModel = require('../models/card');
 const { StatusNotFound, ForbiddenError } = require('../utils/errors');
-
 const { STATUS_CREATED } = require('../utils/errorsCode');
+const cardModel = require('../models/card');
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;

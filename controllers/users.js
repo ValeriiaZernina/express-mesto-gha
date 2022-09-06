@@ -1,13 +1,12 @@
 const bcrypt = require('bcrypt'); // импортируем bcrypt
 const jwt = require('jsonwebtoken');
-const userModel = require('../models/user');
-const { STATUS_OK, STATUS_CREATED } = require('../utils/errorsCode');
-
 const {
   StatusBadRequest,
   StatusNotFound,
   UnauthorizedStatus,
 } = require('../utils/errors');
+const userModel = require('../models/user');
+const { STATUS_OK, STATUS_CREATED } = require('../utils/errorsCode');
 
 module.exports.createUser = (req, res, next) => {
   const {
