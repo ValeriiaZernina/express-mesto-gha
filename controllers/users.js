@@ -82,7 +82,7 @@ module.exports.patchUserMe = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.patchUserMeAvatar = (req, res) => {
+module.exports.patchUserMeAvatar = (req, res, next) => {
   const { avatar } = req.body;
   userModel
     .findByIdAndUpdate(
