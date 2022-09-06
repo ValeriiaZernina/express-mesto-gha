@@ -3,7 +3,11 @@ const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
 const { STATUS_OK, STATUS_CREATED } = require('../utils/errorsCode');
 
-const { StatusBadRequest, StatusNotFound } = require('../utils/errors');
+const {
+  StatusBadRequest,
+  StatusNotFound,
+  UnauthorizedStatus,
+} = require('../utils/errors');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -55,7 +59,7 @@ module.exports.getUsersById = (req, res, next) => {
     .then((user) => {
       if (!user) {
         return res
-          .status(StatusNotFound)
+          .status(UnauthorizedStatus)
           .send({ message: 'Запрашиваемый пользователь не найден.' });
       }
       return res.send(user);

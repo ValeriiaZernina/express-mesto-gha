@@ -9,8 +9,8 @@ cardRouter.post(
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
       link: Joi.string()
-        .pattern(/^https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=]*$/i)
-        .required(),
+        .required()
+        .pattern(/^https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=]*$/i),
     }),
   }),
   cardControllers.createCard,

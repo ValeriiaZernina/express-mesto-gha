@@ -33,8 +33,8 @@ userRouter.patch(
   celebrate({
     body: Joi.object().keys({
       avatar: Joi.string()
-        .pattern(/^https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=]*$/i)
-        .required(),
+        .required()
+        .pattern(/^https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=]*$/i),
     }),
   }),
   userControllers.patchUserMeAvatar,
