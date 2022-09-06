@@ -113,7 +113,7 @@ module.exports.login = (req, res, next) => {
   userModel
     .findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ _id: user._id }, 'SECRET', {
         expiresIn: 1000 * 60 * 60 * 24 * 7,
       });
       res

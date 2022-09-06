@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
   let payload;
   try {
     // верифицируем токен
-    payload = jwt.verify(token, process.env.JWT_SECRET);
+    payload = jwt.verify(token, 'SECRET');
     // console.log(payload);
   } catch (err) {
     res.clearCookie('jwt');
