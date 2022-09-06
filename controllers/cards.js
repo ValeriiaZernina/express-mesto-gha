@@ -62,6 +62,9 @@ module.exports.dislikeCard = (req, res, next) => {
       { $pull: { likes: req.user._id } }, // убрать _id из массива
       { new: true, runValidators: true },
     )
+    .orFail(() => {
+      throw new StatusNotFound('Данное действие вам недоступно.');
+    })
     .then((card) => {
       if (!card) {
         return res
