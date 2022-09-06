@@ -46,14 +46,10 @@ module.exports.likeCard = (req, res, next) => {
       { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
       { new: true, runValidators: true },
     )
-    .then((card) => {
-      if (!card) {
-        return res
-          .status(StatusNotFound)
-          .send({ message: 'ID карточки передан некорректно.' });
-      }
-      return res.send(card);
+    .orFail(() => {
+      throw new StatusNotFound('ID карточки передан некорректно.');
     })
+    .then((card) => res.send(card))
     .catch(next);
 };
 
