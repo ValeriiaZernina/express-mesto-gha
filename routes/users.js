@@ -1,11 +1,12 @@
 const userRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const auth = require('../middleware/auth');
 const userControllers = require('../controllers/users');
 
 // возвращает всех пользователей
-userRouter.get('/', userControllers.getUsers);
+userRouter.get('/', auth, userControllers.getUsers);
 // возвращает информацию о текущем пользователе
-userRouter.get('/me', userControllers.getUsersMe);
+userRouter.get('/me', auth, userControllers.getUsersMe);
 // возвращает пользователя по _id
 userRouter.get(
   '/:id',

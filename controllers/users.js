@@ -40,7 +40,9 @@ module.exports.createUser = (req, res, next) => {
 module.exports.getUsers = (req, res, next) => {
   userModel
     .find({})
-    .then((users) => res.send(users))
+    .then((users) => {
+      res.status(STATUS_OK).send(users);
+    })
     .catch(next);
 };
 
