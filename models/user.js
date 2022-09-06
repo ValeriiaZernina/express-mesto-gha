@@ -40,11 +40,11 @@ userSchema.statics.findUserByCredentials = function test(email, password) {
   return this.findOne({ email })
     .select('+password')
     .orFail(() => {
-      throw new UnauthorizedStatus('Неверный email или пароль');
+      throw new UnauthorizedStatus();
     })
     .then((user) => bcrypt.compare(password, user.password).then((matched) => {
       if (!matched) {
-        throw new UnauthorizedStatus('Неверный email или пароль');
+        throw new UnauthorizedStatus();
       }
       return user;
     }));
