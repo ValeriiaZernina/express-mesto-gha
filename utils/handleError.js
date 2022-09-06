@@ -1,13 +1,13 @@
 function handleError(err, req, res, next) {
   const { name, message, code = 0 } = err;
-  let { status = 500 } = err;
+  let { statusCode = 500 } = err;
   if (name === 'CastErrior' || name === 'ValidationError') {
-    status = 400;
+    statusCode = 400;
   } else if (code === 11000) {
-    status = 409;
+    statusCode = 409;
   }
 
-  res.status(status).send({ message: `${name}: ${message}` });
+  res.status(statusCode).send({ message: `${name}: ${message}` });
   next();
 }
 
