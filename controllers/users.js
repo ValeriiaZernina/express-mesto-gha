@@ -57,6 +57,9 @@ module.exports.getUsersMe = (req, res, next) => {
 module.exports.getUsersById = (req, res, next) => {
   userModel
     .findById(req.params.id)
+    .orFail(() => {
+      throw new StatusNotFound('Пользователь не существует');
+    })
     .then((user) => {
       if (!user) {
         return res
