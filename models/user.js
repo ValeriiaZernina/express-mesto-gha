@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt'); // импортируем bcrypt
-const { UnauthorizedStatus } = require('../utils/errors');
+const { UnauthorizedStatus } = require('../utils/errors/UnauthorizedStatus');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    match: /^https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=]*$/i,
+    validate: [validator.isURL, 'Неверный формат URL'],
   },
   email: {
     type: String,
@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Поле "password" должно быть заполнено'],
-    minlength: [5, 'Пароль должен быть  не менее 6 символов'],
     select: false,
   },
 });

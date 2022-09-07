@@ -1,21 +1,14 @@
 const bcrypt = require('bcrypt'); // импортируем bcrypt
 const jwt = require('jsonwebtoken');
-const {
-  StatusBadRequest,
-  StatusNotFound,
-  UnauthorizedStatus,
-} = require('../utils/errors');
+const { StatusNotFound } = require('../utils/errors/StatusNotFound');
 const userModel = require('../models/user');
-const { STATUS_OK, STATUS_CREATED } = require('../utils/errorsCode');
+const { STATUS_OK, STATUS_CREATED } = require('../utils/errors/errorsCode');
 
 module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
   // userModel.init();
-  if (!email || !password) {
-    throw new StatusBadRequest('Обязательные поля');
-  }
 
   bcrypt
     .hash(password, 10)
@@ -40,7 +33,7 @@ module.exports.getUsers = (req, res, next) => {
   userModel
     .find({})
     .then((users) => {
-      res.status(STATUS_OK).send(users);
+      res.send(users);
     })
     .catch(next);
 };
@@ -60,14 +53,7 @@ module.exports.getUsersById = (req, res, next) => {
     .orFail(() => {
       throw new StatusNotFound('Пользователь не существует');
     })
-    .then((user) => {
-      if (!user) {
-        return res
-          .status(UnauthorizedStatus)
-          .send({ message: 'Запрашиваемый пользователь не найден.' });
-      }
-      return res.send(user);
-    })
+    .then((user) => res.send(user))
     .catch(next);
 };
 
@@ -79,14 +65,10 @@ module.exports.patchUserMe = (req, res, next) => {
       { name, about },
       { new: true, runValidators: true },
     )
-    .then((user) => {
-      if (!user) {
-        return res
-          .status(StatusNotFound)
-          .send({ message: 'Запрашиваемый пользователь не найден.' });
-      }
-      return res.send(user);
+    .orFail(() => {
+      throw new StatusNotFound(`Пользователь с id=${req.user._id} не найден`);
     })
+    .then((user) => res.send(user))
     .catch(next);
 };
 
@@ -98,14 +80,10 @@ module.exports.patchUserMeAvatar = (req, res, next) => {
       { avatar },
       { new: true, runValidators: true },
     )
-    .then((user) => {
-      if (!user) {
-        return res
-          .status(StatusBadRequest)
-          .send({ message: 'Запрашиваемый пользователь не найден.' });
-      }
-      return res.send(user);
+    .orFail(() => {
+      throw new StatusNotFound(`Пользователь с id=${req.user._id} не найден`);
     })
+    .then((user) => res.send(user))
     .catch(next);
 };
 

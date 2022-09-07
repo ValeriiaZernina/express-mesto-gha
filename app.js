@@ -1,9 +1,8 @@
-require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const { StatusNotFound } = require('./utils/errors');
+const { StatusNotFound } = require('./utils/errors/StatusNotFound');
 const { handleError } = require('./utils/handleError');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middleware/auth');
@@ -39,9 +38,9 @@ app.post(
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
       avatar: Joi.string().pattern(
-        /^https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=]*$/i,
+        /https?:\/\/(www\.)?([-a-zA-Z0-9()@:%_+.~#?&=]*)\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/,
       ),
-      password: Joi.string().required().min(6),
+      password: Joi.string().required(),
       email: Joi.string().email().required(),
     }),
   }),

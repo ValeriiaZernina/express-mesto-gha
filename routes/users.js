@@ -34,7 +34,9 @@ userRouter.patch(
     body: Joi.object().keys({
       avatar: Joi.string()
         .required()
-        .pattern(/^https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=]*$/i),
+        .regex(
+          /https?:\/\/(www\.)?([-a-zA-Z0-9()@:%_+.~#?&=]*)\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/,
+        ),
     }),
   }),
   userControllers.patchUserMeAvatar,

@@ -1,5 +1,6 @@
-const { StatusNotFound, ForbiddenError } = require('../utils/errors');
-const { STATUS_CREATED } = require('../utils/errorsCode');
+const { StatusNotFound } = require('../utils/errors/StatusNotFound');
+const { ForbiddenError } = require('../utils/errors/ForbiddenError');
+const { STATUS_CREATED } = require('../utils/errors/errorsCode');
 const cardModel = require('../models/card');
 
 module.exports.createCard = (req, res, next) => {
@@ -33,11 +34,7 @@ module.exports.deleteCard = (req, res, next) => {
       }
       return card.deleteOne();
     })
-    .then((card) => {
-      if (card) {
-        res.send({ message: 'Карточка удалена.' });
-      }
-    })
+    .then(() => res.send({ message: 'Карточка удалена.' }))
     .catch(next);
 };
 
@@ -65,13 +62,6 @@ module.exports.dislikeCard = (req, res, next) => {
     .orFail(() => {
       throw new StatusNotFound('Данное действие вам недоступно.');
     })
-    .then((card) => {
-      if (!card) {
-        return res
-          .status(StatusNotFound)
-          .send({ message: 'ID карточки передан некорректно.' });
-      }
-      return res.send(card);
-    })
+    .then((card) => res.send(card))
     .catch(next);
 };
