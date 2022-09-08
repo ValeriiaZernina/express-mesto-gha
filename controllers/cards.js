@@ -1,4 +1,5 @@
 const { StatusNotFound } = require('../utils/errors/StatusNotFound');
+const { StatusBadRequest } = require('../utils/errors/StatusBadRequest');
 const { ForbiddenError } = require('../utils/errors/ForbiddenError');
 const { STATUS_CREATED } = require('../utils/errors/errorsCode');
 const cardModel = require('../models/card');
@@ -11,7 +12,13 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => {
       res.status(STATUS_CREATED).send(card);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new StatusBadRequest('Переданы некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.getCards = (req, res, next) => {

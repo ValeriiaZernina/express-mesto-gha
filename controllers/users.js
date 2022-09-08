@@ -83,7 +83,13 @@ module.exports.patchUserMe = (req, res, next) => {
       throw new StatusNotFound(`Пользователь с id=${req.user._id} не найден`);
     })
     .then((user) => res.send(user))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new StatusBadRequest('Переданы некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.patchUserMeAvatar = (req, res, next) => {
@@ -98,7 +104,13 @@ module.exports.patchUserMeAvatar = (req, res, next) => {
       throw new StatusNotFound(`Пользователь с id=${req.user._id} не найден`);
     })
     .then((user) => res.send(user))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new StatusBadRequest('Переданы некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.login = (req, res, next) => {

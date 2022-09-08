@@ -1,6 +1,7 @@
 const userRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const userControllers = require('../controllers/users');
+const { regex } = require('../utils/regex ');
 
 // возвращает всех пользователей
 userRouter.get('/', userControllers.getUsers);
@@ -32,11 +33,7 @@ userRouter.patch(
   '/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string()
-        .required()
-        .regex(
-          /https?:\/\/(www\.)?([-a-zA-Z0-9()@:%_+.~#?&=]*)\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/,
-        ),
+      avatar: Joi.string().required().regex(regex),
     }),
   }),
   userControllers.patchUserMeAvatar,
